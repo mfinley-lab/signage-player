@@ -90,35 +90,44 @@ function showItem(item) {
   container.innerHTML = "";
 
   if (!item) {
-    container.innerHTML = "❌ Keine passenden Inhalte gefunden";
+    container.innerHTML = "❌ Kein Inhalt";
     return;
   }
 
-  console.log("SHOW:", item);
+  console.log("SHOW ITEM:", item);
+
+  // ⏱ duration aus Google Sheet (Fallback = 10 Sekunden)
+  const duration = item.duration && !isNaN(item.duration)
+    ? item.duration
+    : 10;
 
   if (item.type === "image") {
     const img = document.createElement("img");
     img.src = item.url;
     container.appendChild(img);
 
-    setTimeout(next, item.duration * 1000);
+    setTimeout(next, duration * 1000);
   }
 
   else if (item.type === "video") {
     const video = document.createElement("video");
     video.src = item.url;
     video.autoplay = true;
-    video.muted = false;
-    video.volume = 1;
+    video.muted = true;
     video.playsInline = true;
 
-    video.onended = next;
+    video.onended = () => {
+      next();
+    };
 
     container.appendChild(video);
+
+    // 🔥 WICHTIG: Fallback falls Video kein "ended" feuert
+    setTimeout(next, duration * 1000);
   }
 
   else {
-    console.log("UNKNOWN TYPE:", item.type);
+    console.log("Unknown type:", item.type);
     setTimeout(next, 3000);
   }
 }
