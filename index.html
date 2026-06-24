@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Signage Player</title>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+img, video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+</style>
+</head>
+
+<body>
+
+<div id="container">Lade Daten...</div>
+
+<script>
+
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRcmYZt1OfP531U5YVtGh3KWdkg4BaqhWOEv-U8ZnlcPOO73zGDpkO4nbc0geDNVokc7ItMzqSMqGiQ/pub?output=csv";
+const LOCATION = "Idar-Oberstein";
+
+let playlist = [];
+let index = 0;
+
+async function loadData() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+
+    console.log("RAW CSV:");
+    console.log(text);
+
+    const rows = text
+      .split("\n")
+      .map(r => r.trim())
+      .filter(r => r.length > 0)
+      .slice(1);
+
+    playlist = rows.map(row => {
+      const cols = row.split(",");
+
+      return {
+        location: (cols[0] || "").replaceAll('"','').trim(),
+        url: (cols[1] || "").replaceAll('"','').trim(),
+        type: (cols[2] || "").replaceAll('"','').trim(),
+        duration: parseInt(cols[3]) || 10
+      };
+    });
+
+    console.log("PLAYLIST BEFORE FILTER:", playlist);
+
+    playlist = playlist.filter(item =>
+      item.location.toLowerCase().includes(LOCATION.toLowerCase())
+    );
+
+    console.log("PLAYLIST AFTER FILTER:", playlist);
+
+  } catch (err) {
+    console.error("FEHLER BEIM LADEN:", err);
+    document.getElementById("container").innerHTML =
+      "❌ Fehler beim Laden der CSV";
+  }
+}
+
+function showItem(item) {
+  const container = document.getElementById("container");
+  container.innerHTML = "";
+
+  if (!item) {
+    container.innerHTML = "❌ Keine passenden Inhalte gefunden";
+    return;
+  }
+
+  console.log("SHOW:", item);
+
+  if (item.type === "image") {
+    const img = document.createElement("img");
+    img.src = item.url;
+    container.appendChild(img);
+
+    setTimeout(next, item.duration * 1000);
+  }
+
+  else if (item.type === "video") {
+    const video = document.createElement("video");
+    video.src = item.url;
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
+
+    video.onended = next;
+
+    container.appendChild(video);
+  }
+
+  else {
+    console.log("UNKNOWN TYPE:", item.type);
+    setTimeout(next, 3000);
+  }
+}
+
+function next() {
+  if (playlist.length === 0) {
+    console.log("Playlist ist leer");
+    return;
+  }
+
+  index = (index + 1) % playlist.length;
+  showItem(playlist[index]);
+}
+
+async function start() {
+  await loadData();
+
+  if (playlist.length === 0) {
+    document.getElementById("container").innerHTML =
+      "❌ Keine Daten nach Filter gefunden<br><br>Check Location im Sheet";
+
+    return;
+  }
+
+  showItem(playlist[0]);
+}
+
+setInterval(loadData, 60000);
+
+start();
+
+</script>
+
+</body>
+</html>
