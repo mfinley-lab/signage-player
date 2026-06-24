@@ -51,7 +51,7 @@ setInterval(() => {
   const now = Date.now();
 
   // wenn länger als 30 Sekunden kein Update passiert → reload
-  if (now - lastLoadTime > 30000) {
+  if (now - lastLoadTime > 300000)
     console.log("⚠️ Watchdog Reload");
     location.reload();
   }
