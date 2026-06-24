@@ -70,18 +70,16 @@ async function loadData() {
       };
     });
 
-    console.log("PLAYLIST BEFORE FILTER:", playlist);
-
     playlist = playlist.filter(item =>
       item.location.toLowerCase().includes(LOCATION.toLowerCase())
     );
 
-    console.log("PLAYLIST AFTER FILTER:", playlist);
+    console.log("PLAYLIST:", playlist);
 
   } catch (err) {
-    console.error("FEHLER BEIM LADEN:", err);
+    console.error("FEHLER:", err);
     document.getElementById("container").innerHTML =
-      "❌ Fehler beim Laden der CSV";
+      "❌ Fehler beim Laden der Daten";
   }
 }
 
@@ -90,16 +88,13 @@ function showItem(item) {
   container.innerHTML = "";
 
   if (!item) {
-    container.innerHTML = "❌ Kein Inhalt";
+    container.innerHTML = "❌ Keine Inhalte gefunden";
     return;
   }
 
-  console.log("SHOW ITEM:", item);
+  console.log("SHOW:", item);
 
-  // ⏱ duration aus Google Sheet (Fallback = 10 Sekunden)
-  const duration = item.duration && !isNaN(item.duration)
-    ? item.duration
-    : 10;
+  const duration = item.duration || 10;
 
   if (item.type === "image") {
     const img = document.createElement("img");
@@ -116,27 +111,22 @@ function showItem(item) {
     video.muted = true;
     video.playsInline = true;
 
-    video.onended = () => {
-      next();
-    };
+    video.onended = next;
 
     container.appendChild(video);
 
-    // 🔥 WICHTIG: Fallback falls Video kein "ended" feuert
+    // fallback
     setTimeout(next, duration * 1000);
   }
 
   else {
-    console.log("Unknown type:", item.type);
+    console.log("UNKNOWN TYPE:", item.type);
     setTimeout(next, 3000);
   }
 }
 
 function next() {
-  if (playlist.length === 0) {
-    console.log("Playlist ist leer");
-    return;
-  }
+  if (playlist.length === 0) return;
 
   index = (index + 1) % playlist.length;
   showItem(playlist[index]);
@@ -147,8 +137,7 @@ async function start() {
 
   if (playlist.length === 0) {
     document.getElementById("container").innerHTML =
-      "❌ Keine Daten nach Filter gefunden<br><br>Check Location im Sheet";
-
+      "❌ Keine Daten nach Filter gefunden";
     return;
   }
 
