@@ -44,14 +44,32 @@ const LOCATION = "Idar-Oberstein";
 
 let playlist = [];
 let index = 0;
+let lastLoadTime = Date.now();
 
+// 🔥 HARD WATCHDOG (verhindert Black Screen)
+setInterval(() => {
+  const now = Date.now();
+
+  // wenn länger als 30 Sekunden kein Update passiert → reload
+  if (now - lastLoadTime > 30000) {
+    console.log("⚠️ Watchdog Reload");
+    location.reload();
+  }
+}, 10000);
+
+// 🔥 Wake / Restart Protection
+window.onload = () => {
+  console.log("🚀 Player gestartet (Wake-on-start aktiv)");
+  start();
+};
+
+// 🔥 CSV laden
 async function loadData() {
   try {
-    const res = await fetch(SHEET_URL);
+    const res = await fetch(SHEET_URL, { cache: "no-store" });
     const text = await res.text();
 
-    console.log("RAW CSV:");
-    console.log(text);
+    console.log("RAW CSV:", text);
 
     const rows = text
       .split("\n")
@@ -68,31 +86,34 @@ async function loadData() {
         type: (cols[2] || "").replaceAll('"','').trim(),
         duration: parseInt(cols[3]) || 10
       };
-    });
-
-    playlist = playlist.filter(item =>
+    }).filter(item =>
       item.location.toLowerCase().includes(LOCATION.toLowerCase())
     );
+
+    lastLoadTime = Date.now();
 
     console.log("PLAYLIST:", playlist);
 
   } catch (err) {
-    console.error("FEHLER:", err);
+    console.error("LOAD ERROR:", err);
+
     document.getElementById("container").innerHTML =
-      "❌ Fehler beim Laden der Daten";
+      "🔄 Fehler beim Laden – versuche Reload...";
+
+    setTimeout(() => location.reload(), 5000);
   }
 }
 
+// 🔥 Anzeige
 function showItem(item) {
   const container = document.getElementById("container");
   container.innerHTML = "";
 
   if (!item) {
-    container.innerHTML = "❌ Keine Inhalte gefunden";
+    container.innerHTML = "⚠️ Keine Inhalte gefunden";
+    setTimeout(() => location.reload(), 5000);
     return;
   }
-
-  console.log("SHOW:", item);
 
   const duration = item.duration || 10;
 
@@ -115,16 +136,15 @@ function showItem(item) {
 
     container.appendChild(video);
 
-    // fallback
     setTimeout(next, duration * 1000);
   }
 
   else {
-    console.log("UNKNOWN TYPE:", item.type);
     setTimeout(next, 3000);
   }
 }
 
+// 🔥 Next Item
 function next() {
   if (playlist.length === 0) return;
 
@@ -132,22 +152,24 @@ function next() {
   showItem(playlist[index]);
 }
 
+// 🔥 Start
 async function start() {
   await loadData();
 
   if (playlist.length === 0) {
     document.getElementById("container").innerHTML =
-      "❌ Keine Daten nach Filter gefunden";
+      "🔄 Lade Inhalte...";
+
+    setTimeout(() => location.reload(), 5000);
     return;
   }
 
   showItem(playlist[0]);
 }
 
+// 🔥 Auto Refresh (Sheets Updates)
 setInterval(loadData, 60000);
-
-start();
-
+  
 </script>
 
 </body>
