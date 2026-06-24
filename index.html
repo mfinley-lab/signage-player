@@ -7,150 +7,151 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="2575.6">
   <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
   </style>
 </head>
 <body>
-<p class="p1">https://docs.google.com/spreadsheets/d/e/2PACX-1vSFx-rCi9f4Ft7LauPfuUV4eMq-gklqMRXggiYVX9nTWYASceOwNWRz-zyNGA5-5XHd9ZH4M8G513Ez/pub?output=csv</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="utf-8"&gt;</p>
-<p class="p1">&lt;title&gt;Signage Player&lt;/title&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;style&gt;</p>
-<p class="p1">html,body{</p>
-<p class="p1">margin:0;</p>
-<p class="p1">padding:0;</p>
-<p class="p1">background:black;</p>
-<p class="p1">width:100%;</p>
-<p class="p1">height:100%;</p>
-<p class="p1">overflow:hidden;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">#container{</p>
-<p class="p1">width:100%;</p>
-<p class="p1">height:100%;</p>
-<p class="p1">display:flex;</p>
-<p class="p1">justify-content:center;</p>
-<p class="p1">align-items:center;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">img,video{</p>
-<p class="p1">width:100%;</p>
-<p class="p1">height:100%;</p>
-<p class="p1">object-fit:contain;</p>
-<p class="p1">}</p>
-<p class="p1">&lt;/style&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div id="container"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">const SHEET_URL = "DEIN_CSV_LINK_HIER";</p>
-<p class="p1">const LOCATION = "Idar-Oberstein";</p>
-<p class="p2"><br></p>
-<p class="p1">let playlist = [];</p>
-<p class="p1">let current = 0;</p>
-<p class="p2"><br></p>
-<p class="p1">async function loadData(){</p>
-<p class="p2"><br></p>
-<p class="p1">try{</p>
-<p class="p2"><br></p>
-<p class="p1">const response = await fetch(SHEET_URL);</p>
-<p class="p1">const csv = await response.text();</p>
-<p class="p2"><br></p>
-<p class="p1">const rows = csv.split("\n").slice(1);</p>
-<p class="p2"><br></p>
-<p class="p1">playlist = rows</p>
-<p class="p1">.map(row=&gt;{</p>
-<p class="p2"><br></p>
-<p class="p1">const cols = row.split(",");</p>
-<p class="p2"><br></p>
-<p class="p1">return {</p>
-<p class="p1">location:(cols[0]||"").trim(),</p>
-<p class="p1">url:(cols[1]||"").trim(),</p>
-<p class="p1">type:(cols[2]||"").trim(),</p>
-<p class="p1">duration:parseInt(cols[3]) || 10</p>
-<p class="p1">};</p>
-<p class="p2"><br></p>
-<p class="p1">})</p>
-<p class="p1">.filter(item=&gt;item.location===LOCATION);</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p1">catch(error){</p>
-<p class="p1">console.error(error);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function showItem(item){</p>
-<p class="p2"><br></p>
-<p class="p1">const container=document.getElementById("container");</p>
-<p class="p1">container.innerHTML="";</p>
-<p class="p2"><br></p>
-<p class="p1">if(!item) return;</p>
-<p class="p2"><br></p>
-<p class="p1">if(item.type==="image"){</p>
-<p class="p2"><br></p>
-<p class="p1">const img=document.createElement("img");</p>
-<p class="p1">img.src=item.url;</p>
-<p class="p2"><br></p>
-<p class="p1">container.appendChild(img);</p>
-<p class="p2"><br></p>
-<p class="p1">setTimeout(next,item.duration*1000);</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">if(item.type==="video"){</p>
-<p class="p2"><br></p>
-<p class="p1">const video=document.createElement("video");</p>
-<p class="p2"><br></p>
-<p class="p1">video.src=item.url;</p>
-<p class="p1">video.autoplay=true;</p>
-<p class="p1">video.muted=true;</p>
-<p class="p1">video.playsInline=true;</p>
-<p class="p2"><br></p>
-<p class="p1">video.onended=next;</p>
-<p class="p2"><br></p>
-<p class="p1">container.appendChild(video);</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function next(){</p>
-<p class="p2"><br></p>
-<p class="p1">if(playlist.length===0) return;</p>
-<p class="p2"><br></p>
-<p class="p1">current=(current+1)%playlist.length;</p>
-<p class="p2"><br></p>
-<p class="p1">showItem(playlist[current]);</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">async function start(){</p>
-<p class="p2"><br></p>
-<p class="p1">await loadData();</p>
-<p class="p2"><br></p>
-<p class="p1">if(playlist.length&gt;0){</p>
-<p class="p1">showItem(playlist[0]);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">setInterval(loadData,60000);</p>
-<p class="p2"><br></p>
-<p class="p1">start();</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<p class="p1"><span class="s1">https://docs.google.com/spreadsheets/d/e/2PACX-1vSFx-rCi9f4Ft7LauPfuUV4eMq-gklqMRXggiYVX9nTWYASceOwNWRz-zyNGA5-5XHd9ZH4M8G513Ez/pubhtml</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;meta charset="utf-8"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;title&gt;Signage Player&lt;/title&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;style&gt;</span></p>
+<p class="p1"><span class="s1">html,body{</span></p>
+<p class="p1"><span class="s1">margin:0;</span></p>
+<p class="p1"><span class="s1">padding:0;</span></p>
+<p class="p1"><span class="s1">background:black;</span></p>
+<p class="p1"><span class="s1">width:100%;</span></p>
+<p class="p1"><span class="s1">height:100%;</span></p>
+<p class="p1"><span class="s1">overflow:hidden;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">#container{</span></p>
+<p class="p1"><span class="s1">width:100%;</span></p>
+<p class="p1"><span class="s1">height:100%;</span></p>
+<p class="p1"><span class="s1">display:flex;</span></p>
+<p class="p1"><span class="s1">justify-content:center;</span></p>
+<p class="p1"><span class="s1">align-items:center;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">img,video{</span></p>
+<p class="p1"><span class="s1">width:100%;</span></p>
+<p class="p1"><span class="s1">height:100%;</span></p>
+<p class="p1"><span class="s1">object-fit:contain;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">&lt;/style&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;div id="container"&gt;&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const SHEET_URL = "DEIN_CSV_LINK_HIER";</span></p>
+<p class="p1"><span class="s1">const LOCATION = "Idar-Oberstein";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">let playlist = [];</span></p>
+<p class="p1"><span class="s1">let current = 0;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">async function loadData(){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">try{</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const response = await fetch(SHEET_URL);</span></p>
+<p class="p1"><span class="s1">const csv = await response.text();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const rows = csv.split("\n").slice(1);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">playlist = rows</span></p>
+<p class="p1"><span class="s1">.map(row=&gt;{</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const cols = row.split(",");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">return {</span></p>
+<p class="p1"><span class="s1">location:(cols[0]||"").trim(),</span></p>
+<p class="p1"><span class="s1">url:(cols[1]||"").trim(),</span></p>
+<p class="p1"><span class="s1">type:(cols[2]||"").trim(),</span></p>
+<p class="p1"><span class="s1">duration:parseInt(cols[3]) || 10</span></p>
+<p class="p1"><span class="s1">};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">})</span></p>
+<p class="p1"><span class="s1">.filter(item=&gt;item.location===LOCATION);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">catch(error){</span></p>
+<p class="p1"><span class="s1">console.error(error);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function showItem(item){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const container=document.getElementById("container");</span></p>
+<p class="p1"><span class="s1">container.innerHTML="";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(!item) return;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(item.type==="image"){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const img=document.createElement("img");</span></p>
+<p class="p1"><span class="s1">img.src=item.url;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">container.appendChild(img);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">setTimeout(next,item.duration*1000);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(item.type==="video"){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const video=document.createElement("video");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">video.src=item.url;</span></p>
+<p class="p1"><span class="s1">video.autoplay=true;</span></p>
+<p class="p1"><span class="s1">video.muted=true;</span></p>
+<p class="p1"><span class="s1">video.playsInline=true;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">video.onended=next;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">container.appendChild(video);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function next(){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(playlist.length===0) return;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">current=(current+1)%playlist.length;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">showItem(playlist[current]);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">async function start(){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">await loadData();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(playlist.length&gt;0){</span></p>
+<p class="p1"><span class="s1">showItem(playlist[0]);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">setInterval(loadData,60000);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">start();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
 </body>
 </html>
