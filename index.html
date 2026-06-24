@@ -46,17 +46,7 @@ let playlist = [];
 let index = 0;
 let lastLoadTime = Date.now();
 
-// 🔥 HARD WATCHDOG (verhindert Black Screen)
-setInterval(() => {
-  const now = Date.now();
-
-  // wenn länger als 30 Sekunden kein Update passiert → reload
-  if (now - lastLoadTime > 300000)
-    console.log("⚠️ Watchdog Reload");
-    location.reload();
-  }
-}, 10000);
-
+  
 // 🔥 Wake / Restart Protection
 window.onload = () => {
   console.log("🚀 Player gestartet (Wake-on-start aktiv)");
